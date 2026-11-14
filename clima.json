@@ -1,0 +1,143 @@
+{
+  "fonte": "NASA POWER (Prediction of Worldwide Energy Resources), comunidade AG, serie diaria. ET0 calculado pelo metodo FAO-56 Penman-Monteith.",
+  "periodo": "2015-2024",
+  "epoca": "Novembro a Abril",
+  "lugares": [
+    {
+      "nome": "Chokwe",
+      "latitude": -24.5333,
+      "longitude": 32.9833,
+      "altitude_m": 33.1,
+      "epocas_usadas": [
+        "2015-16",
+        "2016-17",
+        "2017-18",
+        "2018-19",
+        "2019-20",
+        "2020-21",
+        "2021-22",
+        "2022-23",
+        "2023-24"
+      ],
+      "chuva_epoca_mm": 655.7,
+      "et0_epoca_mm": 1007.0,
+      "graus_dia_base10": 3218.0,
+      "dias_acima_35": 58.6,
+      "por_epoca": {
+        "2015-16": {
+          "chuva_mm": 316.6,
+          "et0_mm": 1139.4,
+          "graus_dia_base10": 3461.4
+        },
+        "2016-17": {
+          "chuva_mm": 769.5,
+          "et0_mm": 923.4,
+          "graus_dia_base10": 3124.5
+        },
+        "2017-18": {
+          "chuva_mm": 638.0,
+          "et0_mm": 970.9,
+          "graus_dia_base10": 3074.0
+        },
+        "2018-19": {
+          "chuva_mm": 829.6,
+          "et0_mm": 1011.1,
+          "graus_dia_base10": 3197.5
+        },
+        "2019-20": {
+          "chuva_mm": 557.5,
+          "et0_mm": 1047.2,
+          "graus_dia_base10": 3287.7
+        },
+        "2020-21": {
+          "chuva_mm": 723.0,
+          "et0_mm": 980.0,
+          "graus_dia_base10": 3193.9
+        },
+        "2021-22": {
+          "chuva_mm": 662.8,
+          "et0_mm": 1019.8,
+          "graus_dia_base10": 3253.3
+        },
+        "2022-23": {
+          "chuva_mm": 615.0,
+          "et0_mm": 984.7,
+          "graus_dia_base10": 3183.2
+        },
+        "2023-24": {
+          "chuva_mm": 789.4,
+          "et0_mm": 986.9,
+          "graus_dia_base10": 3186.8
+        }
+      }
+    },
+    {
+      "nome": "Gurue",
+      "latitude": -15.4669,
+      "longitude": 36.9778,
+      "altitude_m": 754.8,
+      "epocas_usadas": [
+        "2015-16",
+        "2016-17",
+        "2017-18",
+        "2018-19",
+        "2019-20",
+        "2020-21",
+        "2021-22",
+        "2022-23",
+        "2023-24"
+      ],
+      "chuva_epoca_mm": 1904.4,
+      "et0_epoca_mm": 776.6,
+      "graus_dia_base10": 2539.3,
+      "dias_acima_35": 12.2,
+      "por_epoca": {
+        "2015-16": {
+          "chuva_mm": 1153.0,
+          "et0_mm": 859.5,
+          "graus_dia_base10": 2703.4
+        },
+        "2016-17": {
+          "chuva_mm": 1476.9,
+          "et0_mm": 802.7,
+          "graus_dia_base10": 2574.2
+        },
+        "2017-18": {
+          "chuva_mm": 2074.4,
+          "et0_mm": 758.5,
+          "graus_dia_base10": 2452.7
+        },
+        "2018-19": {
+          "chuva_mm": 2004.0,
+          "et0_mm": 722.6,
+          "graus_dia_base10": 2430.5
+        },
+        "2019-20": {
+          "chuva_mm": 2190.2,
+          "et0_mm": 768.1,
+          "graus_dia_base10": 2537.2
+        },
+        "2020-21": {
+          "chuva_mm": 1738.4,
+          "et0_mm": 781.3,
+          "graus_dia_base10": 2518.7
+        },
+        "2021-22": {
+          "chuva_mm": 1967.0,
+          "et0_mm": 814.4,
+          "graus_dia_base10": 2607.8
+        },
+        "2022-23": {
+          "chuva_mm": 2756.9,
+          "et0_mm": 708.6,
+          "graus_dia_base10": 2448.3
+        },
+        "2023-24": {
+          "chuva_mm": 1779.1,
+          "et0_mm": 773.7,
+          "graus_dia_base10": 2580.6
+        }
+      }
+    }
+  ]
+}
