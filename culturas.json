@@ -1,0 +1,153 @@
+{
+  "_sobre": "Tabela de culturas para o motor de rotacao. Field Shift, NASA Space Apps 2026.",
+
+  "_fontes": {
+    "kc_ini / kc_mid / kc_end": {
+      "origem": "FAO Irrigation and Drainage Paper 56, Tabela 12",
+      "url": "https://www.fao.org/4/x0490e/x0490e0b.htm",
+      "nota": "Valores para culturas bem geridas e sem stress, em clima sub-humido (RHmin cerca de 45%, vento 2 m/s). Verificados contra a tabela publicada.",
+      "confianca": "alta"
+    },
+    "temp_base_c / graus_dia_total / ciclo_dias": {
+      "origem": "Valores indicativos de literatura agronomica geral, NAO do FAO-56",
+      "nota": "Variam muito com a variedade e a regiao. Usar como ponto de partida e substituir por fontes locais ou do INIA quando possivel. Declarar na submissao que sao indicativos.",
+      "confianca": "media, a verificar"
+    },
+    "raiz / azoto": {
+      "origem": "Classificacao ordinal definida pela equipa",
+      "nota": "Nao sao medidas fisicas. 'raiz' e uma classificacao qualitativa da profundidade; 'azoto' e um peso relativo, positivo para quem fixa azoto e negativo para quem o consome. Serve para ordenar sequencias, nao para quantificar quimica do solo. Isto tem de ser dito com clareza na submissao.",
+      "confianca": "simplificacao assumida"
+    }
+  },
+
+  "culturas": [
+    {
+      "id": "milho",
+      "nome": "Milho",
+      "nome_en": "Maize",
+      "familia": "gramineas",
+      "kc_ini": 0.30,
+      "kc_mid": 1.20,
+      "kc_end": 0.35,
+      "kc_nota": "kc_end 0.60 se colhido com grao humido, 0.35 depois de seco no campo",
+      "temp_base_c": 10,
+      "graus_dia_total": 1550,
+      "ciclo_dias": 135,
+      "raiz": "media",
+      "azoto": -2,
+      "papel": "Alimento base. Exigente em agua e em azoto."
+    },
+    {
+      "id": "sorgo",
+      "nome": "Sorgo",
+      "nome_en": "Sorghum",
+      "familia": "gramineas",
+      "kc_ini": 0.30,
+      "kc_mid": 1.05,
+      "kc_end": 0.55,
+      "kc_nota": "FAO-56 da kc_mid entre 1.00 e 1.10; usamos o ponto medio",
+      "temp_base_c": 10,
+      "graus_dia_total": 1450,
+      "ciclo_dias": 125,
+      "raiz": "funda",
+      "azoto": -1,
+      "papel": "Alternativa ao milho em seca. Raiz funda rompe compactacao."
+    },
+    {
+      "id": "feijao_nhemba",
+      "nome": "Feijao-nhemba",
+      "nome_en": "Cowpea",
+      "familia": "leguminosas",
+      "kc_ini": 0.40,
+      "kc_mid": 1.05,
+      "kc_end": 0.35,
+      "kc_nota": "FAO-56 agrupa em 'Green gram and cowpeas'. kc_end 0.60 se colhido verde, 0.35 se seco",
+      "temp_base_c": 10,
+      "graus_dia_total": 1150,
+      "ciclo_dias": 75,
+      "raiz": "media",
+      "azoto": 2,
+      "papel": "Peca central da rotacao em clima seco. Fixa azoto, ciclo curto."
+    },
+    {
+      "id": "amendoim",
+      "nome": "Amendoim",
+      "nome_en": "Groundnut",
+      "familia": "leguminosas",
+      "kc_ini": 0.40,
+      "kc_mid": 1.15,
+      "kc_end": 0.60,
+      "kc_nota": "",
+      "temp_base_c": 10,
+      "graus_dia_total": 1550,
+      "ciclo_dias": 130,
+      "raiz": "media",
+      "azoto": 2,
+      "papel": "Fixa azoto e tem mercado. Pede mais agua que o feijao-nhemba."
+    },
+    {
+      "id": "soja",
+      "nome": "Soja",
+      "nome_en": "Soybean",
+      "familia": "leguminosas",
+      "kc_ini": 0.40,
+      "kc_mid": 1.15,
+      "kc_end": 0.50,
+      "kc_nota": "",
+      "temp_base_c": 10,
+      "graus_dia_total": 1450,
+      "ciclo_dias": 120,
+      "raiz": "media",
+      "azoto": 2,
+      "papel": "Fixa azoto mas e a leguminosa mais exigente em agua. Serve de teste ao motor."
+    },
+    {
+      "id": "mandioca",
+      "nome": "Mandioca",
+      "nome_en": "Cassava",
+      "familia": "euforbiaceas",
+      "kc_ini": 0.30,
+      "kc_mid": 0.80,
+      "kc_end": 0.30,
+      "kc_nota": "Valores do ano 1. FAO-56 da ano 2 com kc_mid 1.10 e kc_end 0.50",
+      "temp_base_c": 13,
+      "graus_dia_total": 3200,
+      "ciclo_dias": 300,
+      "raiz": "media",
+      "azoto": -2,
+      "papel": "Seguranca alimentar. Ciclo muito longo, ocupa a terra mais de uma epoca."
+    },
+    {
+      "id": "batata_doce",
+      "nome": "Batata-doce",
+      "nome_en": "Sweet potato",
+      "familia": "convolvulaceas",
+      "kc_ini": 0.50,
+      "kc_mid": 1.15,
+      "kc_end": 0.65,
+      "kc_nota": "",
+      "temp_base_c": 12,
+      "graus_dia_total": 1350,
+      "ciclo_dias": 120,
+      "raiz": "rasa",
+      "azoto": -1,
+      "papel": "Ciclo curto, raiz rasa, familia unica na lista. Boa para intercalar."
+    },
+    {
+      "id": "gergelim",
+      "nome": "Gergelim",
+      "nome_en": "Sesame",
+      "familia": "pedaliaceas",
+      "kc_ini": 0.35,
+      "kc_mid": 1.10,
+      "kc_end": 0.25,
+      "kc_nota": "",
+      "temp_base_c": 15,
+      "graus_dia_total": 1450,
+      "ciclo_dias": 105,
+      "raiz": "funda",
+      "azoto": -1,
+      "papel": "Cultura de rendimento, resiste a seca. Nem toda a decisao e sobre comida."
+    }
+  ]
+}
