@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field Shift — crop rotation advice from NASA Earth observations</title>
+<style>
+  :root{
+    --ink:#132019; --soft:#5a6f64; --faint:#86998f; --line:#e2e9e4;
+    --bg:#f4f7f4; --card:#fff;
+    --green:#1a6a4c; --green-d:#0f4a33; --green-l:#e8f3ed;
+    --amber:#8a5a13; --amber-l:#fdf4e5; --amber-line:#f0dcba;
+    --red:#9b3b2f; --blue:#1f5d7a;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:30px 20px 70px}
+
+  /* ---------- cabecalho ---------- */
+  header{margin-bottom:26px}
+  .kicker{font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+          color:var(--green);font-weight:600;margin-bottom:6px}
+  header h1{font-size:30px;line-height:1.2;margin:0 0 8px;font-weight:650;
+            letter-spacing:-.02em}
+  header p{margin:0;color:var(--soft);max-width:70ch;font-size:16.5px}
+
+  .layout{display:grid;grid-template-columns:330px 1fr;gap:26px;align-items:start}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+  /* ---------- painel esquerdo ---------- */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;
+         padding:20px;position:sticky;top:20px}
+  @media(max-width:900px){.panel{position:static}}
+  .panel h2{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;
+            color:var(--soft);margin:0 0 4px;font-weight:650}
+  .panel h2.sep{margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+  label{display:block;font-size:13.5px;color:var(--soft);margin:15px 0 5px}
+  select{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:9px;
+         background:#fff;color:var(--ink);font-size:15.5px;font-family:inherit}
+  select:focus{outline:2px solid var(--green);outline-offset:1px}
+
+  .verdict{margin-top:16px;padding:14px 15px;border-radius:11px;
+           background:var(--green-l);font-size:14.5px;line-height:1.55}
+  .verdict.dry{background:var(--amber-l)}
+  .verdict strong{display:block;font-size:15.5px;margin-bottom:3px}
+  .verdict .fine{color:var(--soft);font-size:12.5px;margin-top:8px;line-height:1.5}
+
+  .slider-row{margin:18px 0 0}
+  .slider-top{display:flex;justify-content:space-between;align-items:center;
+              font-size:14.5px;font-weight:550}
+  .pips{display:flex;gap:3px}
+  .pip{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .pip.on{background:var(--green)}
+  input[type=range]{width:100%;margin:7px 0 2px;accent-color:var(--green)}
+  .hint{font-size:12px;color:var(--soft);line-height:1.45}
+  .hint.off{color:var(--amber)}
+
+  /* ---------- resultados ---------- */
+  .notice{background:var(--amber-l);border:1px solid var(--amber-line);
+          color:var(--amber);border-radius:12px;padding:13px 16px;
+          font-size:14px;margin-bottom:16px;line-height:1.5}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+        padding:20px 22px;margin-bottom:14px}
+  .card.best{border:2px solid var(--green);padding:19px 21px}
+
+  .badge{display:inline-block;font-size:11px;font-weight:650;letter-spacing:.07em;
+         text-transform:uppercase;color:var(--green);background:var(--green-l);
+         border-radius:20px;padding:3px 11px;margin-bottom:11px}
+  .badge.alt{color:var(--soft);background:#f0f3f1}
+
+  /* linha das epocas */
+  .seasons{display:flex;gap:7px;margin-bottom:14px}
+  .season{flex:1 1 0;background:#f7faf8;border:1px solid var(--line);
+          border-radius:10px;padding:9px 10px;min-width:0}
+  .season.wide{flex-grow:2}
+  .season .n{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+             color:var(--soft);font-weight:600}
+  .season .c{font-size:15px;font-weight:600;margin-top:1px;
+             overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .season.leg{background:var(--green-l);border-color:#cde3d7}
+  .season.leg .c{color:var(--green-d)}
+  @media(max-width:560px){
+    .seasons{flex-wrap:wrap}
+    .season{flex:1 1 44%}
+  }
+
+  .why{font-size:16px;line-height:1.55;margin:0 0 10px}
+  .tradeoff{font-size:14px;color:var(--soft);margin:0 0 12px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+  .chip{font-size:12.5px;border:1px solid var(--line);border-radius:20px;
+        padding:3px 11px;color:var(--soft);background:#fafcfb}
+  .chip b{color:var(--ink);font-weight:650;font-variant-numeric:tabular-nums}
+  .chip.good b{color:var(--green)}
+  .chip.bad b{color:var(--red)}
+
+  details{margin-top:12px}
+  summary{font-size:12.5px;color:var(--soft);cursor:pointer;
+          list-style:none;display:inline-block;padding:3px 0}
+  summary::-webkit-details-marker{display:none}
+  summary:before{content:"▸ ";font-size:10px}
+  details[open] summary:before{content:"▾ "}
+  .bars{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:12px}
+  @media(max-width:620px){.bars{grid-template-columns:repeat(2,1fr)}}
+  .bar .t{font-size:11.5px;color:var(--soft);display:flex;
+          justify-content:space-between;margin-bottom:4px}
+  .bar .t b{color:var(--ink);font-weight:650;font-variant-numeric:tabular-nums}
+  .track{height:5px;background:#eef2f0;border-radius:3px;overflow:hidden}
+  .fill{height:100%;background:#bcd9c9}
+  .fill.hi{background:var(--green)}
+  .flat{font-size:10.5px;color:var(--amber);margin-top:3px}
+
+  footer{margin-top:40px;font-size:12.5px;color:var(--soft);line-height:1.7;
+         border-top:1px solid var(--line);padding-top:18px}
+  footer b{color:var(--ink)}
+  code{font:12.5px ui-monospace,SFMono-Regular,Menlo,monospace;background:#eaefec;
+       padding:2px 6px;border-radius:5px}
+  .err{background:#fdeceb;border:1px solid #f1c9c6;color:#8a2520;
+       padding:18px;border-radius:12px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">NASA Space Apps Challenge 2026 · Field Shift</div>
+    <h1>Which crops should this field grow next?</h1>
+    <p>Four seasons of crop rotation, ranked. Built from NASA Earth observations for
+       places that have no official soil survey, which is most of the farming world.</p>
+  </header>
+
+  <div id="app" class="layout" hidden>
+
+    <div class="panel">
+      <h2>Your field</h2>
+
+      <label for="place">Where is it</label>
+      <select id="place"></select>
+
+      <label for="previous">What you grew last season</label>
+      <select id="previous"></select>
+
+      <div id="verdict" class="verdict"></div>
+
+      <h2 class="sep">What matters most to you</h2>
+      <div class="hint" style="margin-bottom:4px">Move a slider and the ranking changes.</div>
+      <div id="sliders"></div>
+    </div>
+
+    <div>
+      <div id="notice"></div>
+      <div id="results"></div>
+    </div>
+
+  </div>
+
+  <div id="boot" class="err" hidden></div>
+
+  <footer>
+    <p><b>Where the numbers come from.</b> Daily climate series from NASA POWER,
+       AG community, 2015 to 2024. Reference evapotranspiration computed with the
+       FAO-56 Penman-Monteith method. Crop coefficients from FAO Irrigation and
+       Drainage Paper 56, Table 12.</p>
+    <p><b>What this tool cannot tell you.</b> NASA POWER meteorological data has a
+       resolution of 0.5° by 0.625°, about 55 by 60 km in Mozambique. Every field inside
+       that area gets the same answer. This is district-level guidance, not field-level
+       precision, and the nitrogen and root-depth scores are ranked judgements rather
+       than measurements.</p>
+    <p>The data was obtained from the National Aeronautics and Space Administration (NASA)
+       Langley Research Center (LaRC) Prediction of Worldwide Energy Resource (POWER)
+       Project funded through the NASA Earth Science/Applied Science Program.</p>
+  </footer>
+
+</div>
+
+<script type="module">
+import { carregar, melhores, epocasOcupadas, INDICADORES } from "./motor.js";
+
+/* Interface em ingles: o site e um "linked material" da submissao e o
+   guia oficial exige ingles em tudo o que o formulario aponta.
+   Comentarios ficam em portugues, para a equipa. */
+
+const ROTULOS = {
+  agua:   { nome:"Water",        ajuda:"Rain against what the crops need" },
+  calor:  { nome:"Heat",         ajuda:"Enough warmth to reach harvest" },
+  azoto:  { nome:"Soil nitrogen",ajuda:"Legumes add it, cereals take it" },
+  pragas: { nome:"Pest break",   ajuda:"Avoid repeating a plant family" },
+  raiz:   { nome:"Root depth",   ajuda:"Alternating depths open the soil" },
+};
+
+const PESOS_INICIAIS = { agua:2, calor:1, azoto:2, pragas:2, raiz:1 };
+
+let dados = null;
+const pesos = { ...PESOS_INICIAIS };
+const $ = (id) => document.getElementById(id);
+
+/* ------------------------------------------------------------------ *
+ * Explicacao em palavras
+ *
+ * Esta e a parte que transforma a tabela numa recomendacao. As notas de
+ * 0 a 1 dizem alguma coisa a quem as construiu e nada a mais ninguem.
+ * ------------------------------------------------------------------ */
+
+function contarLeguminosas(r){
+  return r.culturas.filter(c => c.familia === "leguminosas").length;
+}
+
+/* Regra: dizer o que DISTINGUE esta rotacao das outras, e as fraquezas.
+   Repetir o que e verdade para todas enche o cartao e nao informa ninguem.
+   Maximo tres frases curtas. */
+function porque(r, ctx){
+  const leg = contarLeguminosas(r);
+  const longa = r.culturas.find(c => epocasOcupadas(c) > 1);
+  const f = [];
+
+  // agua: so vale a pena falar quando separa as opcoes
+  if (ctx.aguaDistingue){
+    if (r.deficitAguaMm <= ctx.melhorDeficit + 2)
+      f.push("Needs the least extra water of these five.");
+    else if (r.deficitAguaMm >= ctx.piorDeficit - 2)
+      f.push(`The thirstiest of these five: ${Math.round(r.deficitAguaMm)} mm short across the four seasons.`);
+  }
+
+  // azoto: o eixo que quase sempre separa
+  if (leg >= 2)
+    f.push(`${leg === 2 ? "Two" : leg === 3 ? "Three" : "Four"} legume seasons leave the soil richer in nitrogen than it started.`);
+  else if (leg === 1)
+    f.push("One legume season replaces part of the nitrogen the other crops take out.");
+  else
+    f.push("No legume in this rotation, so nitrogen only goes down.");
+
+  // o que e invulgar nesta rotacao, ou a sua fraqueza
+  if (longa)
+    f.push(`${longa.nome_en} holds the field for two of the four seasons.`);
+  else if (r.notas.pragas < 0.999)
+    f.push("Two crops of the same family follow each other, so pests carry over.");
+  else if (r.notas.raiz >= 0.8)
+    f.push("Root depth changes every season, which keeps the soil open.");
+  else if (r.notas.raiz <= 0.25)
+    f.push("Every crop roots at a similar depth, so the lower soil stays compacted.");
+
+  return f.slice(0, 3).join(" ");
+}
+
+/* Em que epocas esta rotacao difere da melhor. Quando as pontuacoes
+   empatam, e isto que o agricultor precisa de saber para escolher:
+   onde esta a liberdade que tem. */
+function ondeDifere(r, melhor){
+  const a = r.culturas, b = melhor.culturas;
+  const trocas = [];
+  for (let i = 0; i < Math.min(a.length, b.length); i++)
+    if (a[i].id !== b[i].id)
+      trocas.push(`season ${i + 1}, ${a[i].nome_en.toLowerCase()} instead of ${b[i].nome_en.toLowerCase()}`);
+  if (a.length !== b.length || trocas.length > 2) return "several seasons";
+  return trocas.join("; ");
+}
+
+function compromisso(r, melhor){
+  if (r === melhor) return "";
+  const dAgua = Math.round(r.deficitAguaMm - melhor.deficitAguaMm);
+  const dAzoto = r.saldoAzoto - melhor.saldoAzoto;
+  const t = [];
+  if (dAgua > 2)  t.push(`needs ${dAgua} mm more water`);
+  if (dAgua < -2) t.push(`needs ${-dAgua} mm less water`);
+  if (dAzoto > 0) t.push("leaves more nitrogen behind");
+  if (dAzoto < 0) t.push("leaves less nitrogen behind");
+
+  if (!t.length)
+    return `Scores the same as the top option. Differs in ${ondeDifere(r, melhor)}. Pick whichever you can plant.`;
+  return `Against the top option: ${t.join(" and ")}. Differs in ${ondeDifere(r, melhor)}.`;
+}
+
+/* ------------------------------------------------------------------ *
+ * Interface
+ * ------------------------------------------------------------------ */
+
+function construirControlos(){
+  $("place").innerHTML = Object.keys(dados.lugares)
+    .map(n => `<option value="${n}">${n}</option>`).join("");
+
+  $("previous").innerHTML =
+    `<option value="">Nothing, the field rested</option>` +
+    dados.culturas.map(c => `<option value="${c.id}">${c.nome_en}</option>`).join("");
+  $("previous").value = "milho";
+
+  $("sliders").innerHTML = INDICADORES.map(k => `
+    <div class="slider-row">
+      <div class="slider-top">
+        <span>${ROTULOS[k].nome}</span>
+        <span class="pips" id="pips-${k}"></span>
+      </div>
+      <input type="range" id="w-${k}" min="0" max="3" step="1" value="${pesos[k]}"
+             aria-label="${ROTULOS[k].nome} importance">
+      <div class="hint" id="hint-${k}">${ROTULOS[k].ajuda}</div>
+    </div>`).join("");
+
+  for (const k of INDICADORES){
+    $(`w-${k}`).addEventListener("input", e => {
+      pesos[k] = Number(e.target.value);
+      desenhar();
+    });
+  }
+  $("place").addEventListener("change", desenhar);
+  $("previous").addEventListener("change", desenhar);
+}
+
+function desenharPips(discrimina){
+  for (const k of INDICADORES){
+    $(`pips-${k}`).innerHTML = [1,2,3]
+      .map(i => `<span class="pip ${i <= pesos[k] ? "on" : ""}"></span>`).join("");
+    const hint = $(`hint-${k}`);
+    if (!discrimina[k]){
+      hint.textContent = "Does not change anything at this location";
+      hint.className = "hint off";
+    } else {
+      hint.textContent = ROTULOS[k].ajuda;
+      hint.className = "hint";
+    }
+  }
+}
+
+function desenharVeredicto(lugar){
+  const b = lugar.chuva_epoca_mm - lugar.et0_epoca_mm;
+  const seco = b < 0;
+  const v = $("verdict");
+  v.className = "verdict" + (seco ? " dry" : "");
+  v.innerHTML = seco
+    ? `<strong>Water is the limit here.</strong>
+       Crops need about <b>${Math.abs(b).toFixed(0)} mm</b> more water per season than
+       the rain brings. Drought-tolerant and short-cycle crops score best.
+       <div class="fine">Rain ${lugar.chuva_epoca_mm} mm · crop demand
+       ${lugar.et0_epoca_mm} mm · ${lugar.graus_dia_base10} growing degree days ·
+       ${lugar.altitude_m} m above sea level</div>`
+    : `<strong>Water is not the limit here.</strong>
+       Rain brings about <b>${b.toFixed(0)} mm</b> more than the crops need each season.
+       What decides instead is warmth and keeping the soil healthy.
+       <div class="fine">Rain ${lugar.chuva_epoca_mm} mm · crop demand
+       ${lugar.et0_epoca_mm} mm · ${lugar.graus_dia_base10} growing degree days ·
+       ${lugar.altitude_m} m above sea level</div>`;
+}
+
+function linhaEpocas(r){
+  let n = 0;
+  return `<div class="seasons">` + r.culturas.map(c => {
+    const largura = epocasOcupadas(c);
+    const de = n + 1; n += largura;
+    const rotulo = largura > 1 ? `Seasons ${de}–${n}` : `Season ${de}`;
+    const leg = c.familia === "leguminosas" ? " leg" : "";
+    return `<div class="season${largura > 1 ? " wide" : ""}${leg}">
+              <div class="n">${rotulo}</div>
+              <div class="c" title="${c.nome_en}">${c.nome_en}</div>
+            </div>`;
+  }).join("") + `</div>`;
+}
+
+function desenhar(){
+  const lugar = dados.lugares[$("place").value];
+  const anteriorId = $("previous").value;
+  const anterior = anteriorId ? dados.porId[anteriorId] : null;
+
+  desenharVeredicto(lugar);
+
+  const { resultados, discrimina } = melhores(lugar, dados.culturas, anterior, pesos, 5);
+  desenharPips(discrimina);
+
+  const deficits = resultados.map(r => r.deficitAguaMm);
+  const ctx = {
+    melhorDeficit: Math.min(...deficits),
+    piorDeficit: Math.max(...deficits),
+    aguaDistingue: discrimina.agua && (Math.max(...deficits) - Math.min(...deficits)) > 5,
+  };
+  const melhor = resultados[0];
+
+  const mudos = INDICADORES.filter(k => !discrimina[k]);
+  $("notice").innerHTML = mudos.length
+    ? `<div class="notice">Every rotation scores the same on
+         <b>${mudos.map(k => ROTULOS[k].nome.toLowerCase()).join(" and ")}</b> at this
+         location, so those sliders cannot change the ranking. That is itself an answer:
+         ${mudos.length > 1 ? "they are" : "it is"} not what limits this field.</div>`
+    : "";
+
+  $("results").innerHTML = resultados.map((r, i) => `
+    <div class="card ${i === 0 ? "best" : ""}">
+      <span class="badge ${i === 0 ? "" : "alt"}">
+        ${i === 0 ? "Best match for your priorities" : `Alternative ${i}`}
+      </span>
+      ${linhaEpocas(r)}
+      <p class="why">${porque(r, ctx)}</p>
+      ${i === 0 ? "" : `<p class="tradeoff">${compromisso(r, melhor)}</p>`}
+      <div class="chips">
+        <span class="chip ${r.deficitAguaMm <= ctx.melhorDeficit + 2 ? "good" : ""}">
+          Water shortfall <b>${r.deficitAguaMm.toFixed(0)} mm</b></span>
+        <span class="chip ${r.saldoAzoto > 0 ? "good" : r.saldoAzoto < 0 ? "bad" : ""}">
+          Nitrogen <b>${r.saldoAzoto > 0 ? "+" : ""}${r.saldoAzoto}</b></span>
+        <span class="chip">Overall <b>${(r.total * 100).toFixed(0)}</b></span>
+      </div>
+      <details>
+        <summary>How this was scored</summary>
+        <div class="bars">
+          ${INDICADORES.map(k => `
+            <div class="bar">
+              <div class="t"><span>${ROTULOS[k].nome}</span><b>${r.notas[k].toFixed(2)}</b></div>
+              <div class="track">
+                <div class="fill ${r.notas[k] >= 0.75 ? "hi" : ""}"
+                     style="width:${Math.round(r.notas[k] * 100)}%"></div>
+              </div>
+              ${discrimina[k] ? "" : '<div class="flat">same for all</div>'}
+            </div>`).join("")}
+        </div>
+      </details>
+    </div>`).join("");
+}
+
+try{
+  dados = await carregar();
+  construirControlos();
+  desenhar();
+  $("app").hidden = false;
+}catch(e){
+  const boot = $("boot");
+  boot.hidden = false;
+  boot.innerHTML = `<b>Could not load the data files.</b><br>
+    This page reads <code>clima.json</code> and <code>culturas.json</code> with fetch,
+    which browsers block on <code>file://</code>. Serve the folder over HTTP instead:
+    <br><br><code>python -m http.server 8000</code><br><br>
+    then open <code>http://localhost:8000</code>
+    <br><br><small>${e}</small>`;
+}
+</script>
+</body>
+</html>
